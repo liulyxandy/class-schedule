@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 
-interface ApiConfig {
+export interface ApiConfig {
     /**
      * 课表服务器的根节点。
      * @default "https://backend-cs.liulyxandy.cn"
