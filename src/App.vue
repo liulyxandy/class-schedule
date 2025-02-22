@@ -1,61 +1,95 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { invoke } from "@tauri-apps/api/core";
 
-const greetMsg = ref("");
-const name = ref("");
-
-async function greet() {
-  // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-  greetMsg.value = await invoke("greet", { name: name.value });
+const config = {
+  title: "课程表"
 }
+
+const timestr = ref("...");
+const datestr = ref("...");
+const fontSize = ref(28);
+const showFontSizePopup = ref(false);
+const editingClassIndex = ref<number | null>(null);
+const newClassName = ref("");
+
+function getTodayClass(): Array<string> {
+  return [];
+}
+
+const classList = ref(getTodayClass());
+
+setInterval(() => {
+  const now = new Date();
+  const h = now.getHours();
+  const m = now.getMinutes();
+  timestr.value = `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}`;
+
+  const weekday = ["日", "一", "二", "三", "四", "五", "六"];
+  const d = new Date();
+  const w = weekday[d.getDay()];
+  datestr.value = `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日 星期${w}`;
+}, 1000);
+
+function toggleFontSizePopup() {
+  showFontSizePopup.value = !showFontSizePopup.value;
+}
+
+function updateFontSize(event: Event) {
+  const target = event.target as HTMLInputElement;
+  fontSize.value = parseInt(target.value);
+}
+
+function startEditingClass(index: number) {
+  editingClassIndex.value = index;
+  newClassName.value = classList.value[index];
+}
+
+function saveClassName() {
+  if (editingClassIndex.value !== null) {
+    classList.value[editingClassIndex.value] = newClassName.value;
+    editingClassIndex.value = null;
+  }
+}
+
 </script>
 
 <template>
-  <main class="container">
-    <h1>Welcome to Tauri + Vue</h1>
-
-    <div class="row">
-      <a href="https://vitejs.dev" target="_blank">
-        <img src="/vite.svg" class="logo vite" alt="Vite logo" />
-      </a>
-      <a href="https://tauri.app" target="_blank">
-        <img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
-      </a>
-      <a href="https://vuejs.org/" target="_blank">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-      </a>
+  <div class="container" data-tauri-drag-region>
+    <div class="header" data-tauri-drag-region @contextmenu.prevent="toggleFontSizePopup">
+      <p data-tauri-drag-region>{{ config.title }}</p>
     </div>
-    <p>Click on the Tauri, Vite, and Vue logos to learn more.</p>
-
-    <form class="row" @submit.prevent="greet">
-      <input id="greet-input" v-model="name" placeholder="Enter a name..." />
-      <button type="submit">Greet</button>
-    </form>
-    <p>{{ greetMsg }}</p>
-  </main>
+    <div class="box">
+      <p>{{ datestr }}</p>
+      <p class="time">{{ timestr }}</p>
+    </div>
+    <div class="list">
+      <div v-for="(item, id) in classList" :key="item" class="class-row" @contextmenu.prevent="startEditingClass(id)">
+        <p class="class-id">{{ id + 1 }}</p>
+        <div class="class-item" :style="{ fontSize: fontSize + 'px' }">
+          <p v-if="editingClassIndex !== id">{{ item }}</p>
+          <input v-else v-model="newClassName" @blur="saveClassName" @keyup.enter="saveClassName" />
+        </div>
+      </div>
+    </div>
+    <div v-if="showFontSizePopup" class="popup">
+      <label for="font-size">字体大小: </label>
+      <input id="font-size" type="number" v-model="fontSize" @input="updateFontSize" />
+      <br>
+      <div class="about">
+        <b>作者：刘宇轩</b>
+      </div>
+    </div>
+  </div>
 </template>
 
-<style scoped>
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #249b73);
-}
-
-</style>
 <style>
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
-
   color: #0f0f0f;
-  background-color: #f6f6f6;
-
+  background-color: rgba(0, 0, 0, 0.2);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -64,97 +98,86 @@ async function greet() {
 }
 
 .container {
-  margin: 0;
-  padding-top: 10vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  text-align: center;
+  align-items: center;
+  padding: 20px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: 0.75s;
+.header {
+  color: gray;
+  font-size: 10px;
 }
 
-.logo.tauri:hover {
-  filter: drop-shadow(0 0 2em #24c8db);
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-
-a:hover {
-  color: #535bf2;
-}
-
-h1 {
-  text-align: center;
-}
-
-input,
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  color: #0f0f0f;
+.box {
+  border-radius: 10px;
   background-color: #ffffff;
-  transition: border-color 0.25s;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.time {
+  font-size: 60px;
+  font-weight: bold;
+  padding: 20px;
+}
+
+.list {
+  width: 100%;
+}
+
+.class-row {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.class-item {
+  flex: 1;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  padding: 10px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.class-id {
+  color: white;
+  background: none;
+  margin-right: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+p {
+  margin: 0;
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  z-index: 1000;
 }
 
 button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
   cursor: pointer;
 }
 
-button:hover {
-  border-color: #396cd8;
+.about {
+  margin-top: 20px;
+  font-size: 12px;
+  color: gray;
 }
-button:active {
-  border-color: #396cd8;
-  background-color: #e8e8e8;
-}
-
-input,
-button {
-  outline: none;
-}
-
-#greet-input {
-  margin-right: 5px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #f6f6f6;
-    background-color: #2f2f2f;
-  }
-
-  a:hover {
-    color: #24c8db;
-  }
-
-  input,
-  button {
-    color: #ffffff;
-    background-color: #0f0f0f98;
-  }
-  button:active {
-    background-color: #0f0f0f69;
-  }
-}
-
 </style>
