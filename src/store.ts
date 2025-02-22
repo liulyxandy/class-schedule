@@ -10,7 +10,8 @@ export const useConfigStore = defineStore('config', {
                 fontSize: '28'
             },
             api: {
-                classid: '0'
+                classid: '202301',
+                baseurl: 'https://backend-cs.liulyxandy.cn'
             }
         }
     },
