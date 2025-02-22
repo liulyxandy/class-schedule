@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { Config } from './config'
 import * as fs from '@tauri-apps/plugin-fs'
-import Api, { ApiRespData } from './api.debug.ts'
+import Api, { ApiRespData } from './api.ts'
 
 export const useConfigStore = defineStore('config', {
     state: (): Config => {
@@ -45,8 +45,28 @@ export const useScheduleStore = defineStore('schedule', {
     actions: {
         async fetchSchedule(apiConfig: Config['api']) {
             const api = new Api(apiConfig);
-            this.schedule = (await api.getSchedule())[new Date().getDay()];
-            this.timetable = await api.getTimeTable();
+            const modalsStore = useModalsStore();
+            if (modalsStore.dataType === 'local') {
+                modalsStore.dataStatus = 'fetching';
+                if (!(await fs.exists('backup.schedule.json', {baseDir: fs.BaseDirectory.AppConfig})) || !(await fs.exists('backup.timetable.json', {baseDir: fs.BaseDirectory.AppConfig}))) {
+                    modalsStore.dataStatus = 'error';
+                    return;
+                }
+                this.schedule = JSON.parse(await fs.readTextFile('backup.schedule.json', {baseDir: fs.BaseDirectory.AppConfig}));
+                this.timetable = JSON.parse(await fs.readTextFile('backup.timetable.json', {baseDir: fs.BaseDirectory.AppConfig}));
+                modalsStore.dataStatus = 'success';
+            } else {
+                this.schedule = (await api.getSchedule())[new Date().getDay()];
+                this.timetable = await api.getTimeTable();
+                if (!(await fs.exists('backup.schedule.json', {baseDir: fs.BaseDirectory.AppConfig}))){
+                    await fs.create('backup.schedule.json', {baseDir: fs.BaseDirectory.AppConfig});
+                }
+                if (!(await fs.exists('backup.timetable.json', {baseDir: fs.BaseDirectory.AppConfig}))){
+                    await fs.create('backup.timetable.json', {baseDir: fs.BaseDirectory.AppConfig});
+                }
+                await fs.writeTextFile('backup.schedule.json', JSON.stringify(this.schedule), {baseDir: fs.BaseDirectory.AppConfig});
+                await fs.writeTextFile('backup.timetable.json', JSON.stringify(this.timetable), {baseDir: fs.BaseDirectory.AppConfig});
+            }
         }
     }
 })
@@ -54,12 +74,17 @@ export const useScheduleStore = defineStore('schedule', {
 export const useModalsStore = defineStore('modals', {
     state: () => {
         return {
-            config: false
+            config: false,
+            dataType: 'cloud',
+            dataStatus: 'fetching'
         }
     },
     actions: {
         toggleconfig() {
             this.config = !this.config
-        }
+        },
+        setDataType(type: 'cloud' | 'local') {
+            this.dataType = type;
+        },
     }
 })

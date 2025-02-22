@@ -3,9 +3,9 @@ import { storeToRefs } from 'pinia';
 import { useConfigStore, useModalsStore, useScheduleStore } from './store.ts';
 import { ref } from "vue";
 import ConfigModal from './ConfigModal.vue';
-import { Row, Col } from 'ant-design-vue';
-import { ControlOutlined } from '@ant-design/icons-vue';
-import { ApiRespData } from './api.debug.ts';
+import { Row, Col, Space, Popover, Switch } from 'ant-design-vue';
+import { ControlOutlined, CloudTwoTone, DatabaseTwoTone, CloudOutlined, DatabaseOutlined } from '@ant-design/icons-vue';
+import { ApiRespData } from './api.ts';
 
 const configStore = useConfigStore();
 const config = storeToRefs(configStore);
@@ -36,6 +36,11 @@ configStore.hasConfig().then(async (exists) => {
     modalsStore.toggleconfig();
   }
 });
+
+const handleSwitch = async (checked: number | string | boolean) => {
+  modalsStore.dataType = checked as string;
+  await scheduleStore.fetchSchedule(configStore.api);
+}
 
 </script>
 
@@ -72,7 +77,24 @@ configStore.hasConfig().then(async (exists) => {
         </span>
         </Col>
         <Col flex="auto" align="right" style="color: white;">
-        <ControlOutlined @click="modalsStore.toggleconfig()" />
+        <Space>
+          <Popover>
+            <template #content>
+              <Switch @change="handleSwitch" :checked="modalsStore.dataType" checked-value="cloud"
+                un-checked-value="local">
+                <template #checkedChildren><CloudOutlined /></template>
+                <template #unCheckedChildren><DatabaseOutlined /></template>
+              </Switch>
+            </template>
+            <span @click="scheduleStore.fetchSchedule(configStore.api)" style="cursor: pointer;">
+              <CloudTwoTone v-if="modalsStore.dataType == 'cloud'"
+                :two-tone-color="modalsStore.dataStatus == 'success' ? '#52c41a' : modalsStore.dataStatus == 'error' ? '#eb2f96' : ''" />
+              <DatabaseTwoTone v-else
+                :two-tone-color="modalsStore.dataStatus == 'success' ? '#52c41a' : modalsStore.dataStatus == 'error' ? '#eb2f96' : ''" />
+            </span>
+          </Popover>
+          <ControlOutlined @click="modalsStore.toggleconfig()" />
+        </Space>
         </Col>
       </Row>
     </footer>

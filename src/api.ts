@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from "axios";
+import { useModalsStore } from "./store";
 
 export interface ApiConfig {
     /**
@@ -97,11 +98,14 @@ class Api {
      */
     async getTimeTable(): Promise<ApiRespData.TimeTable> {
         return new Promise((resolve, reject) => {
+            const modalsStore = useModalsStore();
+            modalsStore.dataStatus = 'fetching';
             this.request.get<ApiResponse<ApiRespData.TimeTable>>("/timetable")
                 .then(res => {
                     resolve(res.data.data);
                 })
                 .catch(err => {
+                    modalsStore.dataStatus = 'error';
                     reject(err);
                 });
         });
@@ -113,11 +117,14 @@ class Api {
      */
     async getSchedule(): Promise<ApiRespData.Schedule> {
         return new Promise((resolve, reject) => {
+            const modalsStore = useModalsStore();
+            modalsStore.dataStatus = 'fetching';
             this.request.get<ApiResponse<ApiRespData.Schedule>>("/schedule")
                 .then(res => {
                     resolve(res.data.data);
                 })
                 .catch(err => {
+                    modalsStore.dataStatus = 'error';
                     reject(err);
                 });
         });
@@ -129,11 +136,13 @@ class Api {
      */
     async getClassInfo(): Promise<ApiRespData.ClassInfo> {
         return new Promise((resolve, reject) => {
+            const modalsStore = useModalsStore();
             this.request.get<ApiResponse<ApiRespData.ClassInfo>>("/")
                 .then(res => {
                     resolve(res.data.data);
                 })
                 .catch(err => {
+                    modalsStore.dataStatus = 'error';
                     reject(err);
                 });
         });
