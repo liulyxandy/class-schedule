@@ -40,20 +40,26 @@ export namespace ApiRespData {
          */
         name: string,
         /**
-         * 课程开始时间。
-         */
-        start: string,
-        /**
-         * 课程结束时间。
-         */
-        end: string
-        /**
          * 类型。
          */
         type: TimeTableItemType
     }
     export type TimeTable = Array<TimeTableItem>;
     export type Schedule = Array<Array<string>>;
+    export interface ClassInfo {
+        /**
+         * 班级名称。
+         */
+        name: string,
+        /**
+         * 班级ID。
+         */
+        id: string,
+        /**
+         * 班级描述。
+         */
+        description: string
+    }
 }
 
 
@@ -104,6 +110,22 @@ class Api {
     async getSchedule(): Promise<ApiRespData.Schedule> {
         return new Promise((resolve, reject) => {
             this.request.get<ApiResponse<ApiRespData.Schedule>>("/schedule")
+                .then(res => {
+                    resolve(res.data.data);
+                })
+                .catch(err => {
+                    reject(err);
+                });
+        });
+    }
+
+    /**
+     * 获取班级信息。
+     * @returns 班级信息。
+     */
+    async getClassInfo(): Promise<ApiRespData.ClassInfo> {
+        return new Promise((resolve, reject) => {
+            this.request.get<ApiResponse<ApiRespData.ClassInfo>>("/")
                 .then(res => {
                     resolve(res.data.data);
                 })
