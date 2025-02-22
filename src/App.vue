@@ -59,10 +59,16 @@ configStore.hasConfig().then(async (exists) => {
     <div class="list">
       <div v-for="item in timetable" :key="item.name" @contextmenu.prevent="">
         <span v-if="item.type === ApiRespData.TimeTableItemType.Course" class="class-row">
-          <p class="class-id">{{ item.name }}</p>
-          <div class="class-item" :style="{ fontSize: config.ui.value.fontSize + 'px' }">
-            <p>{{ schedule[item.bindId!] }}</p>
-          </div>
+          <Row style="margin-top: 10px;" align="middle">
+            <Col flex="30px" align="center">
+            <p class="class-id">{{ item.name }}</p>
+            </Col>
+            <Col flex="auto">
+            <div class="class-item" :style="{ fontSize: config.ui.value.fontSize + 'px' }">
+              <p>{{ schedule[item.bindId!] }}</p>
+            </div>
+            </Col>
+          </Row>
         </span>
         <span v-else>
           <p class="class-caption">{{ item.name }}</p>
@@ -72,12 +78,12 @@ configStore.hasConfig().then(async (exists) => {
     <footer class="footer">
       <Row style="margin: 10px;">
         <Col flex="50px">
-          <span style="color: gray;">
-            V2.0.0
-          </span>
+        <span style="color: gray;">
+          V2.0.0
+        </span>
         </Col>
         <Col flex="auto" align="right" style="color: white;">
-          <ControlOutlined @click="modalsStore.toggleconfig()" />
+        <ControlOutlined @click="modalsStore.toggleconfig()" />
         </Col>
       </Row>
     </footer>
@@ -126,8 +132,6 @@ configStore.hasConfig().then(async (exists) => {
 }
 
 .class-row {
-  display: flex;
-  align-items: center;
   margin-top: 10px;
 }
 
@@ -141,7 +145,6 @@ configStore.hasConfig().then(async (exists) => {
 }
 
 .class-item {
-  flex: 1;
   border-radius: 5px;
   background-color: #f9f9f9;
   padding: 10px;

@@ -73,16 +73,16 @@ class Api {
     async getTimeTable(): Promise<ApiRespData.TimeTable> {
         return new Promise((resolve, _reject) => {
             resolve([
-                { name: "早", type: ApiRespData.TimeTableItemType.Course },
-                { name: "1", type: ApiRespData.TimeTableItemType.Course, bindId: 0 },
-                { name: "2", type: ApiRespData.TimeTableItemType.Course, bindId: 1 },
-                { name: "3", type: ApiRespData.TimeTableItemType.Course, bindId: 2 },
-                { name: "4", type: ApiRespData.TimeTableItemType.Course, bindId: 3 },
+                { name: "早", type: ApiRespData.TimeTableItemType.Course, bindId: 0 },
+                { name: "1", type: ApiRespData.TimeTableItemType.Course, bindId: 1 },
+                { name: "2", type: ApiRespData.TimeTableItemType.Course, bindId: 2 },
+                { name: "3", type: ApiRespData.TimeTableItemType.Course, bindId: 3 },
+                { name: "4", type: ApiRespData.TimeTableItemType.Course, bindId: 4 },
                 { name: "午休", type: ApiRespData.TimeTableItemType.Caption },
-                { name: "5", type: ApiRespData.TimeTableItemType.Course, bindId: 4 },
-                { name: "6", type: ApiRespData.TimeTableItemType.Course, bindId: 5 },
-                { name: "7", type: ApiRespData.TimeTableItemType.Course, bindId: 6 },
-                { name: "8", type: ApiRespData.TimeTableItemType.Course, bindId: 7 },
+                { name: "5", type: ApiRespData.TimeTableItemType.Course, bindId: 5 },
+                { name: "6", type: ApiRespData.TimeTableItemType.Course, bindId: 6 },
+                { name: "7", type: ApiRespData.TimeTableItemType.Course, bindId: 7 },
+                { name: "8", type: ApiRespData.TimeTableItemType.Course, bindId: 8 },
                 { name: "自习", type: ApiRespData.TimeTableItemType.Caption }
             ])
         });
