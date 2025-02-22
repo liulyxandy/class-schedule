@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { useConfigStore, useModalsStore } from './store.ts';
-import Api, { ApiRespData } from './api.debug.ts';
+import { useConfigStore, useModalsStore, useScheduleStore } from './store.ts';
 import { ref } from "vue";
 import ConfigModal from './ConfigModal.vue';
 import { Row, Col } from 'ant-design-vue';
 import { ControlOutlined } from '@ant-design/icons-vue';
+import { ApiRespData } from './api.debug.ts';
 
 const configStore = useConfigStore();
 const config = storeToRefs(configStore);
 const modalsStore = useModalsStore();
+const scheduleStore = useScheduleStore();
+const { schedule, timetable } = storeToRefs(scheduleStore);
 
 const timestr = ref("...");
 const datestr = ref("...");
@@ -26,24 +28,11 @@ setInterval(() => {
   datestr.value = `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日 星期${w}`;
 }, 1000);
 
-const api = new Api(configStore.api);
-
-const schedule = ref<string[]>([]);
-const timetable = ref<ApiRespData.TimeTable>([]);
-
-api.getSchedule().then((data) => {
-  schedule.value = data[2];
-});
-api.getTimeTable().then((data) => {
-  timetable.value = data;
-})
-
 configStore.hasConfig().then(async (exists) => {
   if (exists) {
     await configStore.readConfig();
-    console.log(configStore)
+    await scheduleStore.fetchSchedule(configStore.api);
   } else {
-    console.log("No config found, opening config modal");
     modalsStore.toggleconfig();
   }
 });
@@ -65,7 +54,7 @@ configStore.hasConfig().then(async (exists) => {
             </Col>
             <Col flex="auto">
             <div class="class-item" :style="{ fontSize: config.ui.value.fontSize + 'px' }">
-              <p>{{ schedule[item.bindId!] }}</p>
+              <p>{{ schedule ? schedule[item.bindId!] : '&nbsp;' }}</p>
             </div>
             </Col>
           </Row>

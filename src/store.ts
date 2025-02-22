@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { Config } from './config'
 import * as fs from '@tauri-apps/plugin-fs'
+import Api, { ApiRespData } from './api.debug.ts'
 
 export const useConfigStore = defineStore('config', {
     state: (): Config => {
@@ -31,6 +32,20 @@ export const useConfigStore = defineStore('config', {
         async setConfig(state: Config) {
             this.$patch(state);
             await this.saveConfig();
+        }
+    }
+})
+
+export const useScheduleStore = defineStore('schedule', {
+    state: () => ({
+        schedule: [] as string[],
+        timetable: [] as ApiRespData.TimeTable
+    }),
+    actions: {
+        async fetchSchedule(apiConfig: Config['api']) {
+            const api = new Api(apiConfig);
+            this.schedule = (await api.getSchedule())[new Date().getDay()];
+            this.timetable = await api.getTimeTable();
         }
     }
 })
