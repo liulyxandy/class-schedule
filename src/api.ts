@@ -42,7 +42,11 @@ export namespace ApiRespData {
         /**
          * 类型。
          */
-        type: TimeTableItemType
+        type: TimeTableItemType,
+        /**
+         * 绑定的课程节数。
+         */
+        bindId?: number
     }
     export type TimeTable = Array<TimeTableItem>;
     export type Schedule = Array<Array<string>>;
