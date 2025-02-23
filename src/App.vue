@@ -5,13 +5,19 @@ import { ref } from "vue";
 import ConfigModal from './ConfigModal.vue';
 import { Row, Col, Space, Popover, Switch } from 'ant-design-vue';
 import { ControlOutlined, CloudTwoTone, DatabaseTwoTone, CloudOutlined, DatabaseOutlined } from '@ant-design/icons-vue';
-import { ApiRespData } from './api.ts';
+import Api, { ApiRespData } from './api.ts';
 
 const configStore = useConfigStore();
 const config = storeToRefs(configStore);
 const modalsStore = useModalsStore();
 const scheduleStore = useScheduleStore();
 const { schedule, timetable } = storeToRefs(scheduleStore);
+
+let api = new Api(configStore.api)
+
+configStore.$subscribe((_, state) => {
+  api = new Api(state.api)
+})
 
 const timestr = ref("...");
 const datestr = ref("...");
@@ -31,7 +37,7 @@ setInterval(() => {
 configStore.hasConfig().then(async (exists) => {
   if (exists) {
     await configStore.readConfig();
-    await scheduleStore.fetchSchedule(configStore.api);
+    await scheduleStore.fetchSchedule(api);
   } else {
     modalsStore.toggleconfig();
   }
@@ -39,7 +45,7 @@ configStore.hasConfig().then(async (exists) => {
 
 const handleSwitch = async (checked: number | string | boolean) => {
   modalsStore.dataType = checked as string;
-  await scheduleStore.fetchSchedule(configStore.api);
+  await scheduleStore.fetchSchedule(api);
 }
 
 </script>
@@ -86,7 +92,7 @@ const handleSwitch = async (checked: number | string | boolean) => {
                 <template #unCheckedChildren><DatabaseOutlined /></template>
               </Switch>
             </template>
-            <span @click="scheduleStore.fetchSchedule(configStore.api)" style="cursor: pointer;">
+            <span @click="scheduleStore.fetchSchedule(api)" style="cursor: pointer;">
               <CloudTwoTone v-if="modalsStore.dataType == 'cloud'"
                 :two-tone-color="modalsStore.dataStatus == 'success' ? '#52c41a' : modalsStore.dataStatus == 'error' ? '#eb2f96' : ''" />
               <DatabaseTwoTone v-else

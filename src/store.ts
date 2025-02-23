@@ -43,8 +43,7 @@ export const useScheduleStore = defineStore('schedule', {
         timetable: [] as ApiRespData.TimeTable
     }),
     actions: {
-        async fetchSchedule(apiConfig: Config['api']) {
-            const api = new Api(apiConfig);
+        async fetchSchedule(api: Api) {
             const modalsStore = useModalsStore();
             if (modalsStore.dataType === 'local') {
                 modalsStore.dataStatus = 'fetching';
