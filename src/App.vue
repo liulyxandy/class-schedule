@@ -41,7 +41,7 @@ configStore.hasConfig().then(async (exists) => {
     await configStore.readConfig();
     await scheduleStore.fetchSchedule(api);
   } else {
-    modalsStore.toggleconfig();
+    modalsStore.settings = true;
   }
 });
 
