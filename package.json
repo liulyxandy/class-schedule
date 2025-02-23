@@ -15,6 +15,7 @@
     "@tauri-apps/plugin-autostart": "~2",
     "@tauri-apps/plugin-fs": "~2",
     "@tauri-apps/plugin-opener": "^2.2.5",
+    "@tauri-apps/plugin-positioner": "~2",
     "ant-design-vue": "^4.2.6",
     "axios": "^1.7.9",
     "pinia": "^3.0.1",
