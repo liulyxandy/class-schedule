@@ -9,6 +9,9 @@ import { ControlOutlined, CloudTwoTone, DatabaseTwoTone, CloudOutlined, Database
 import { enable, isEnabled } from '@tauri-apps/plugin-autostart';
 import Api, { ApiRespData } from './api.ts';
 import { VERSION } from './config.ts';
+import { moveWindow, Position } from '@tauri-apps/plugin-positioner';
+
+moveWindow(Position.TopRight);
 
 const configStore = useConfigStore();
 const config = storeToRefs(configStore);
