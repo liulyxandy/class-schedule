@@ -9,9 +9,11 @@ import { openUrl } from "@tauri-apps/plugin-opener";
 const updateModal = ref(false)
 const forceUpdate = ref(false)
 const version = ref("")
+const updatelog = ref("")
 Api.getLatestVersion().then(data => {
     if (data.versionCode > VERSION_CODE) {
         version.value = data.version
+        updatelog.value = data.updatelog
         updateModal.value = true
         if (data.versionCode - VERSION_CODE > 3) {
             forceUpdate.value = true;
@@ -25,6 +27,7 @@ Api.getLatestVersion().then(data => {
             版本更新
         </template>
         <p>发现新版本：{{ version }}</p>
+        <p>{{ updatelog }}</p>
         <b v-if="forceUpdate">当前版本与最新版本落后过多，必须强制更新。</b>
         <br>
         <a href="https://www.yuque.com/liulyxandy/class-schedule/changelog" target="_blank">查看更新日志</a>

@@ -23,7 +23,11 @@ export namespace ApiRespData {
         /**
          * 课表服务器的内部版本号。
          */
-        versionCode: number
+        versionCode: number,
+        /**
+         * 更新日志
+         */
+        updatelog: string
     }
     export enum TimeTableItemType {
         Course = "course",
