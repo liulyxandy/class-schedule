@@ -76,7 +76,8 @@ export const useModalsStore = defineStore('modals', {
         return {
             config: false,
             dataType: 'cloud',
-            dataStatus: 'fetching'
+            dataStatus: 'fetching',
+            settings: false
         }
     },
     actions: {
