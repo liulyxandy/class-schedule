@@ -18,7 +18,7 @@ importers:
         specifier: ~2
         version: 2.2.0
       '@tauri-apps/plugin-opener':
-        specifier: ^2
+        specifier: ^2.2.5
         version: 2.2.5
       ant-design-vue:
         specifier: ^4.2.6

@@ -10,6 +10,7 @@
     "opener:default",
     "core:window:allow-start-dragging",
     "fs:allow-appconfig-read",
-    "fs:allow-appconfig-write"
+    "fs:allow-appconfig-write",
+    "opener:default"
   ]
 }
