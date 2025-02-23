@@ -3,9 +3,11 @@ import { storeToRefs } from 'pinia';
 import { useConfigStore, useModalsStore, useScheduleStore } from './store.ts';
 import { ref } from "vue";
 import ConfigModal from './ConfigModal.vue';
+import UpdateModal from './UpdateModal.vue';
 import { Row, Col, Space, Popover, Switch } from 'ant-design-vue';
 import { ControlOutlined, CloudTwoTone, DatabaseTwoTone, CloudOutlined, DatabaseOutlined } from '@ant-design/icons-vue';
 import Api, { ApiRespData } from './api.ts';
+import { VERSION } from './config.ts';
 
 const configStore = useConfigStore();
 const config = storeToRefs(configStore);
@@ -79,7 +81,7 @@ const handleSwitch = async (checked: number | string | boolean) => {
       <Row style="margin: 10px;">
         <Col flex="50px">
         <span style="color: gray;">
-          V2.0.0
+         V{{ VERSION }}
         </span>
         </Col>
         <Col flex="auto" align="right" style="color: white;">
@@ -106,6 +108,7 @@ const handleSwitch = async (checked: number | string | boolean) => {
     </footer>
   </div>
   <ConfigModal />
+  <UpdateModal />
 </template>
 
 <style>
