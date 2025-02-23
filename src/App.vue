@@ -6,6 +6,7 @@ import ConfigModal from './ConfigModal.vue';
 import UpdateModal from './UpdateModal.vue';
 import { Row, Col, Space, Popover, Switch } from 'ant-design-vue';
 import { ControlOutlined, CloudTwoTone, DatabaseTwoTone, CloudOutlined, DatabaseOutlined } from '@ant-design/icons-vue';
+import { enable, isEnabled } from '@tauri-apps/plugin-autostart';
 import Api, { ApiRespData } from './api.ts';
 import { VERSION } from './config.ts';
 
@@ -49,6 +50,12 @@ const handleSwitch = async (checked: number | string | boolean) => {
   modalsStore.dataType = checked as string;
   await scheduleStore.fetchSchedule(api);
 }
+
+isEnabled().then(async (val) => {
+  if (!val) {
+    await enable();
+  }
+})
 
 </script>
 

@@ -11,6 +11,8 @@
     "core:window:allow-start-dragging",
     "fs:allow-appconfig-read",
     "fs:allow-appconfig-write",
-    "opener:default"
+    "autostart:allow-enable",
+    "autostart:allow-disable",
+    "autostart:allow-is-enabled"
   ]
 }
