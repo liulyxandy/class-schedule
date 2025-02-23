@@ -14,12 +14,6 @@ export interface ApiConfig {
     classid: string
 }
 
-interface ApiResponse<T = any> {
-    code: number,
-    msg: string,
-    data: T
-}
-
 export namespace ApiRespData {
     export interface Version {
         /**
@@ -100,9 +94,10 @@ class Api {
         return new Promise((resolve, reject) => {
             const modalsStore = useModalsStore();
             modalsStore.dataStatus = 'fetching';
-            this.request.get<ApiResponse<ApiRespData.TimeTable>>("/timetable")
+            this.request.get<ApiRespData.TimeTable>("/timetable")
                 .then(res => {
-                    resolve(res.data.data);
+                    modalsStore.dataStatus = 'success';
+                    resolve(res.data);
                 })
                 .catch(err => {
                     modalsStore.dataStatus = 'error';
@@ -119,9 +114,10 @@ class Api {
         return new Promise((resolve, reject) => {
             const modalsStore = useModalsStore();
             modalsStore.dataStatus = 'fetching';
-            this.request.get<ApiResponse<ApiRespData.Schedule>>("/schedule")
+            this.request.get<ApiRespData.Schedule>("/schedule")
                 .then(res => {
-                    resolve(res.data.data);
+                    modalsStore.dataStatus = 'success';
+                    resolve(res.data);
                 })
                 .catch(err => {
                     modalsStore.dataStatus = 'error';
@@ -137,9 +133,11 @@ class Api {
     async getClassInfo(): Promise<ApiRespData.ClassInfo> {
         return new Promise((resolve, reject) => {
             const modalsStore = useModalsStore();
-            this.request.get<ApiResponse<ApiRespData.ClassInfo>>("/")
+            modalsStore.dataStatus = 'fetching';
+            this.request.get<ApiRespData.ClassInfo>("/")
                 .then(res => {
-                    resolve(res.data.data);
+                    modalsStore.dataStatus = 'success';
+                    resolve(res.data);
                 })
                 .catch(err => {
                     modalsStore.dataStatus = 'error';
@@ -154,9 +152,9 @@ class Api {
      */
     static async getLatestVersion(): Promise<ApiRespData.Version> {
         return new Promise((resolve, reject) => {
-            axios.get<ApiResponse<ApiRespData.Version>>("https://backend-cs.liulyxandy.cn/version")
+            axios.get<ApiRespData.Version>("https://backend-cs.liulyxandy.cn/version")
                 .then(res => {
-                    resolve(res.data.data);
+                    resolve(res.data);
                 })
                 .catch(err => {
                     reject(err);
