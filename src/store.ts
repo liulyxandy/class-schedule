@@ -82,9 +82,6 @@ export const useModalsStore = defineStore('modals', {
     actions: {
         toggleconfig() {
             this.config = !this.config
-        },
-        setDataType(type: 'cloud' | 'local') {
-            this.dataType = type;
-        },
+        }
     }
 })
