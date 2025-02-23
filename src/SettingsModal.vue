@@ -8,8 +8,8 @@ const modalsStore = useModalsStore();
 const { settings } = storeToRefs(modalsStore);
 
 const configData = ref({
-    baseurl: state.payload.api.baseurl,
-    classid: state.payload.api.classid
+    baseurl: configStore.api.baseurl,
+    classid: configStore.api.classid
 })
 
 configStore.$subscribe((state) => {
