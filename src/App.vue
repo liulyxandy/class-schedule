@@ -69,10 +69,6 @@ const handleContextMenu = (item: ApiRespData.TimeTableItem) => {
       schedule.value[item.bindId!] = val.value;
     }
   });
-  const newValue = prompt('请输入新的课程名称:', schedule.value[item.bindId!]);
-  if (newValue !== null) {
-    schedule.value[item.bindId!] = newValue;
-  }
 };
 </script>
 
