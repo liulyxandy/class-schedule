@@ -33,7 +33,7 @@ isEnabled().then((enabled) => {
                 <Input v-model:value="configData.ui.value.fontSize" type="number" />
             </FormItem>
             <FormItem label="自动启动">
-                <Switch v-model:value="autostart" />
+                <Switch v-model:checked="autostart" />
             </FormItem>
         </Form>
         <Button type="dashed" @click="modalsStore.settings = true">高级设置</Button>
