@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useConfigStore, useModalsStore, useScheduleStore } from './store.ts';
-import { ref } from "vue";
+import { h, ref } from "vue";
 import ConfigModal from './ConfigModal.vue';
 import UpdateModal from './UpdateModal.vue';
-import { Row, Col, Space, Popover, Switch } from 'ant-design-vue';
+import { Row, Col, Space, Popover, Switch, Modal, Input } from 'ant-design-vue';
 import { ControlOutlined, CloudTwoTone, DatabaseTwoTone, CloudOutlined, DatabaseOutlined } from '@ant-design/icons-vue';
 import Api, { ApiRespData } from './api.ts';
 import { VERSION } from './config.ts';
@@ -52,6 +52,28 @@ const handleSwitch = async (checked: number | string | boolean) => {
   modalsStore.dataType = checked as string;
   await scheduleStore.fetchSchedule(api);
 }
+
+const handleContextMenu = (item: ApiRespData.TimeTableItem) => {
+  const val = ref(schedule.value[item.bindId!]);
+  Modal.info({
+    title: '课程名称',
+    content: () => {
+      return h('div', [
+        h('p', '请输入新的课程名称:'),
+        h(Input, {
+          value: val.value
+        })
+      ])
+    },
+    onOk: () => {
+      schedule.value[item.bindId!] = val.value;
+    }
+  });
+  const newValue = prompt('请输入新的课程名称:', schedule.value[item.bindId!]);
+  if (newValue !== null) {
+    schedule.value[item.bindId!] = newValue;
+  }
+};
 </script>
 
 <template>
@@ -61,14 +83,14 @@ const handleSwitch = async (checked: number | string | boolean) => {
       <p class="time">{{ timestr }}</p>
     </div>
     <div class="list" v-if="schedule.length > 0">
-      <div v-for="item in timetable" :key="item.name" @contextmenu.prevent="">
+      <div v-for="item in timetable" :key="item.name">
         <span v-if="item.type === ApiRespData.TimeTableItemType.Course" class="class-row">
           <Row style="margin-top: 10px;" align="middle">
             <Col flex="30px" align="center">
             <p class="class-id">{{ item.name }}</p>
             </Col>
             <Col flex="auto">
-            <div class="class-item" :style="{ fontSize: config.ui.value.fontSize + 'px' }">
+            <div class="class-item" :style="{ fontSize: config.ui.value.fontSize + 'px' }" @contextmenu.prevent="handleContextMenu(item)">
               <p>{{ schedule[item.bindId!] }}</p>
             </div>
             </Col>
