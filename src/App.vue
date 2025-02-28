@@ -61,13 +61,18 @@ const handleContextMenu = (item: ApiRespData.TimeTableItem) => {
       return h('div', [
         h('p', '请输入新的课程名称:'),
         h(Input, {
-          value: val.value
+          defaultValue: schedule.value[item.bindId!],
+          onInput: (e) => {
+            val.value = e.target.value!;
+          }
         })
       ])
     },
     onOk: () => {
       schedule.value[item.bindId!] = val.value;
-    }
+    },
+    closable: true,
+    okCancel: true
   });
 };
 </script>
