@@ -68,7 +68,7 @@ isEnabled().then(async (val) => {
       <p>{{ datestr }}</p>
       <p class="time">{{ timestr }}</p>
     </div>
-    <div class="list">
+    <div class="list" v-if="schedule.length > 0">
       <div v-for="item in timetable" :key="item.name" @contextmenu.prevent="">
         <span v-if="item.type === ApiRespData.TimeTableItemType.Course" class="class-row">
           <Row style="margin-top: 10px;" align="middle">
@@ -77,7 +77,7 @@ isEnabled().then(async (val) => {
             </Col>
             <Col flex="auto">
             <div class="class-item" :style="{ fontSize: config.ui.value.fontSize + 'px' }">
-              <p>{{ schedule ? schedule[item.bindId!] : '&nbsp;' }}</p>
+              <p>{{ schedule[item.bindId!] }}</p>
             </div>
             </Col>
           </Row>
@@ -86,6 +86,9 @@ isEnabled().then(async (val) => {
           <p class="class-caption">{{ item.name }}</p>
         </span>
       </div>
+    </div>
+    <div class="empty" v-else>
+      <p>暂未获取到课程哦~</p>
     </div>
     <footer class="footer">
       <Row style="margin: 10px;">
@@ -200,5 +203,14 @@ p {
   position: absolute;
   bottom: 0;
   width: 100%;
+}
+
+.empty {
+  color: white;
+  background: none;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 20px;
 }
 </style>
