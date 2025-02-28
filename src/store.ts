@@ -51,13 +51,14 @@ export const useScheduleStore = defineStore('schedule', {
                     modalsStore.dataStatus = 'error';
                     return;
                 }
-                this.schedule = JSON.parse(await fs.readTextFile('backup.schedule.json', {baseDir: fs.BaseDirectory.AppConfig}));
+                this.schedule = JSON.parse(await fs.readTextFile('backup.schedule.json', {baseDir: fs.BaseDirectory.AppConfig}))[new Date().getDay()];
                 this.timetable = JSON.parse(await fs.readTextFile('backup.timetable.json', {baseDir: fs.BaseDirectory.AppConfig}));
                 modalsStore.dataStatus = 'success';
             } else {
                 let day = new Date().getDay();
                 day = day == 0 ? 6 : day - 1;
-                this.schedule = (await api.getSchedule())[day];
+                let schedule = await api.getSchedule();
+                this.schedule = schedule[day];
                 this.timetable = await api.getTimeTable();
                 if (!(await fs.exists('backup.schedule.json', {baseDir: fs.BaseDirectory.AppConfig}))){
                     await fs.create('backup.schedule.json', {baseDir: fs.BaseDirectory.AppConfig});
@@ -65,7 +66,7 @@ export const useScheduleStore = defineStore('schedule', {
                 if (!(await fs.exists('backup.timetable.json', {baseDir: fs.BaseDirectory.AppConfig}))){
                     await fs.create('backup.timetable.json', {baseDir: fs.BaseDirectory.AppConfig});
                 }
-                await fs.writeTextFile('backup.schedule.json', JSON.stringify(this.schedule), {baseDir: fs.BaseDirectory.AppConfig});
+                await fs.writeTextFile('backup.schedule.json', JSON.stringify(schedule), {baseDir: fs.BaseDirectory.AppConfig});
                 await fs.writeTextFile('backup.timetable.json', JSON.stringify(this.timetable), {baseDir: fs.BaseDirectory.AppConfig});
             }
         }
