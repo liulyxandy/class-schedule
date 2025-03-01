@@ -7,5 +7,5 @@ export interface Config {
     }
 }
 
-export const VERSION = '2.0.0'
-export const VERSION_CODE = 1
+export const VERSION = '2.1.0'
+export const VERSION_CODE = 2
