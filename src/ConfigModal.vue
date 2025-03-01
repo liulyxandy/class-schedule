@@ -13,10 +13,10 @@ const autostart = ref(false);
 const saveConfig = async () => {
     await configStore.saveConfig();
     if (autostart.value) {
-        await enable();
+        enable();
     }
     else {
-        await disable();
+        disable();
     }
     modalsStore.toggleconfig();
 }
