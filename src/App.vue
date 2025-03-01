@@ -83,7 +83,7 @@ const handleContextMenu = (item: ApiRespData.TimeTableItem) => {
       <p>{{ datestr }}</p>
       <p class="time">{{ timestr }}</p>
     </div>
-    <div class="list" v-if="schedule.length > 0">
+    <div class="list" v-if="schedule">
       <div v-for="item in timetable" :key="item.name">
         <span v-if="item.type === ApiRespData.TimeTableItemType.Course" class="class-row">
           <Row style="margin-top: 10px;" align="middle">
